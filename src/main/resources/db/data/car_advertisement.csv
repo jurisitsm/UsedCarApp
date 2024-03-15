@@ -1,7 +1,7 @@
-id;brand;type;description;price
-f47ac10b-58cc-4372-a567-0e02b2c3d479;Skoda;Superb 2.0 TDI;Lightly used, still got some mileage in it.;1000000
-e2d8bf94-b8fb-4eca-8a1f-55d6014a542f;Toyota;Corolla;Nice car, buy it.;1000000
-3718c55e-f7de-4614-9963-067a115569d8;Ford;Focus;Gets you far enough.;1500000
-3ec7f9c2-ff21-4bc9-8576-34225c5eab9a;Ford;Mustang;You know you want it, I know you want it.;3000000
-e32aecc6-1d8e-4ae7-bc1d-f85d77a6a2f8;Opel;Astra;It is a car, it has four wheels, what else do you need to know?;950000
-8757b601-af2e-48ac-8f2b-d60fe3d86cb2;Nissan;Altima;I ran out of car description ideas.;3000000
+id;brand;type;description;price;author_id
+f47ac10b-58cc-4372-a567-0e02b2c3d479;Skoda;Superb 2.0 TDI;Lightly used, still got some mileage in it.;1000000;d4871b02-8023-4b94-9296-6ae4deef6623
+e2d8bf94-b8fb-4eca-8a1f-55d6014a542f;Toyota;Corolla;Nice car, buy it.;1000000;d4871b02-8023-4b94-9296-6ae4deef6623
+3718c55e-f7de-4614-9963-067a115569d8;Ford;Focus;Gets you far enough.;1500000;d4871b02-8023-4b94-9296-6ae4deef6623
+3ec7f9c2-ff21-4bc9-8576-34225c5eab9a;Ford;Mustang;You know you want it, I know you want it.;3000000;4a09ee6b-9254-4bc8-bce1-fd5ff0f6733f
+e32aecc6-1d8e-4ae7-bc1d-f85d77a6a2f8;Opel;Astra;It is a car, it has four wheels, what else do you need to know?;950000;4a09ee6b-9254-4bc8-bce1-fd5ff0f6733f
+8757b601-af2e-48ac-8f2b-d60fe3d86cb2;Nissan;Altima;I ran out of car description ideas.;3000000;fe9b38d8-33a1-49dc-90d9-f51e7a4fa065

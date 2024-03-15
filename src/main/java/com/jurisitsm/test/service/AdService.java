@@ -3,6 +3,7 @@ package com.jurisitsm.test.service;
 import com.jurisitsm.test.exception.UsedCarAdException;
 import com.jurisitsm.test.model.CarAdvertisement;
 import com.jurisitsm.test.repository.AdRepository;
+import com.jurisitsm.test.repository.UserRepository;
 import com.jurisitsm.test.specificiation.CarAdvertisementSpecification;
 import com.jurisitsm.test.web.dto.request.AdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,12 @@ import java.util.stream.Collectors;
 public class AdService {
     private static final String adPathName = "/ad/";
     private final AdRepository adRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public AdService(AdRepository adRepository) {
+    public AdService(AdRepository adRepository, UserRepository userRepository) {
         this.adRepository = adRepository;
+        this.userRepository = userRepository;
     }
 
     public CarAdvertisement createAd(AdRequest adRequest){
