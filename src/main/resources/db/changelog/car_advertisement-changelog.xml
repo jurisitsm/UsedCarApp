@@ -5,18 +5,20 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="createTable_car_20240314" author="jurisitsm">
-        <createTable tableName="car">
+    <changeSet id="createTable_car_advertisement_20240314" author="jurisitsm">
+        <createTable tableName="car_advertisement">
             <column name="id" type="varchar(36)">
                 <constraints primaryKey="true" primaryKeyName="pk_car"/>
             </column>
             <column name="brand" type="varchar(255)"/>
-            <column name="color" type="varchar(255)"/>
+            <column name="type" type="varchar(255)"/>
+            <column name="description" type="varchar(255)"/>
+            <column name="price" type="bigint"/>
         </createTable>
     </changeSet>
 
-    <changeSet id="seedTable_car_20240314" author="jurisitsm">
-        <loadData tableName="car" relativeToChangelogFile="true" file="../data/car.csv" separator=";"/>
+    <changeSet id="seedTable_car_advertisement_20240314" author="jurisitsm">
+        <loadData tableName="car_advertisement" relativeToChangelogFile="true" file="../data/car_advertisement.csv" separator=";"/>
     </changeSet>
 
 </databaseChangeLog>
