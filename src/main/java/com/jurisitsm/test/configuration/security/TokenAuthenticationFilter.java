@@ -1,0 +1,49 @@
+package com.jurisitsm.test.configuration.security;
+
+import com.jurisitsm.test.service.TokenService;
+import com.jurisitsm.test.service.UserService;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Optional;
+
+@Component
+public class TokenAuthenticationFilter extends OncePerRequestFilter {
+
+    private final UserService userService;
+    private final TokenService tokenService;
+    @Autowired
+    public TokenAuthenticationFilter(UserService userService, TokenService tokenService) {
+        this.userService = userService;
+        this.tokenService = tokenService;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            var token = tokenService.getAccessTokenFromRequest(request);
+
+            Optional.ofNullable(token)
+                    .filter(tokenService::validateAccessToken)
+                    .map(tokenService::getEmailFromAccessToken)
+                    .map(userService::getUserByEmail)
+                    .map(user -> new UsernamePasswordAuthenticationToken(user, null))
+                    .ifPresent(authentication -> SecurityContextHolder.getContext()
+                            .setAuthentication(authentication));
+        } catch (Exception e) {
+            System.out.println("Authenticated failed.");
+        }
+        filterChain.doFilter(request, response);
+    }
+
+}

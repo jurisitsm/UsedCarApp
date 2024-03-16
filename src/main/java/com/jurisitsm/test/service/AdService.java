@@ -4,7 +4,7 @@ import com.jurisitsm.test.exception.UsedCarAdException;
 import com.jurisitsm.test.model.CarAdvertisement;
 import com.jurisitsm.test.repository.AdRepository;
 import com.jurisitsm.test.repository.UserRepository;
-import com.jurisitsm.test.specificiation.CarAdvertisementSpecification;
+import com.jurisitsm.test.repository.specificiation.CarAdvertisementSpecification;
 import com.jurisitsm.test.web.dto.request.AdRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;

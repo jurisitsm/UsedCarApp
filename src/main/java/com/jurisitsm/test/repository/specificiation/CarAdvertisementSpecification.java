@@ -1,4 +1,4 @@
-package com.jurisitsm.test.specificiation;
+package com.jurisitsm.test.repository.specificiation;
 
 import com.jurisitsm.test.model.CarAdvertisement;
 import org.springframework.data.jpa.domain.Specification;

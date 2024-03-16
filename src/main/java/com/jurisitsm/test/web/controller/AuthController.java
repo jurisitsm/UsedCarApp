@@ -1,11 +1,21 @@
 package com.jurisitsm.test.web.controller;
 
 import com.jurisitsm.test.exception.UsedCarAdException;
+import com.jurisitsm.test.model.AppUser;
+import com.jurisitsm.test.model.RefreshToken;
+import com.jurisitsm.test.service.TokenService;
 import com.jurisitsm.test.service.UserService;
+import com.jurisitsm.test.web.dto.request.LoginRequest;
 import com.jurisitsm.test.web.dto.request.UserRequest;
+import com.jurisitsm.test.web.dto.response.LoginResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,29 +26,42 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, AuthenticationManager authenticationManager,
+                          TokenService tokenService) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
     }
 
     @PostMapping("/signup")
-    public void signup(@Valid @RequestBody UserRequest userRequest) throws UsedCarAdException {
+    public ResponseEntity<Void> signup(@Valid @RequestBody UserRequest userRequest) throws UsedCarAdException {
         if (userService.existsByEmail(userRequest.getEmail())) {
             throw new UsedCarAdException("User with email: " + userRequest.getEmail() + " already exists.",
                     HttpStatus.BAD_REQUEST);
         }
-
+        userService.createUser(userRequest);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")
-    public void login(){
-
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) throws UsedCarAdException {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                loginRequest.getEmail(), loginRequest.getPassword());
+        Authentication auth = authenticationManager.authenticate(authToken);
+        AppUser user = (AppUser) auth.getPrincipal();
+        String accessToken = tokenService.generateAccessTokenFromEmail(user.getEmail());
+        RefreshToken refreshToken = tokenService.createRefreshToken(user);
+        return ResponseEntity.ok(new LoginResponse(accessToken, refreshToken.getId()));
     }
 
     @PostMapping("/logout")
-    public void logout(){
-
+    public void logout(@AuthenticationPrincipal AppUser user) throws UsedCarAdException {
+        tokenService.deleteRefreshTokenByUser(user);
+        userService.registerLogoutTime(user);
     }
 
 }
