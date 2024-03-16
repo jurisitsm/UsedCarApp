@@ -8,3 +8,11 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   liquibase:
     change-log: classpath:db/changelog-master.xml
+
+app:
+  jwt:
+    secret: SomeRandomSecretKey
+    accessToken:
+      expiresMin: 60
+    refreshToken:
+      expiresMin: 120

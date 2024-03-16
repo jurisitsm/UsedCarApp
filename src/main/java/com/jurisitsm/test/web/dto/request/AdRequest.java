@@ -4,23 +4,16 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Size;
 
 public class AdRequest {
-    @Size(max = 20)
+    @Size(max = 20, message = "Brand name should not be longer than 20 characters.")
     private String brand;
-    @Size(max = 20)
+    @Size(max = 20, message = "Type should not be longer than 20 characters.")
     private String type;
-    @Size(max = 200)
+    @Size(max = 200, message = "The description of the vehicle for sale should not be longer than 200 characters.")
     private String description;
-    @Max(value = 9999999999L)
+    @Max(value = 9999999999L, message = "The price of the vehicle for sale can not be more than ten digits.")
     private long price;
 
     public AdRequest(){}
-
-    public AdRequest(String brand, String type, String description, long price) {
-        this.brand = brand;
-        this.type = type;
-        this.description = description;
-        this.price = price;
-    }
 
     public String getBrand() {
         return brand;
