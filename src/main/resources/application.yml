@@ -11,7 +11,7 @@ spring:
 
 app:
   jwt:
-    secret: SomeRandomSecretKey
+    secret: SomeRandomSecretKeyThatIsHopefullyLongEnough
     accessToken:
       expiresMin: 60
     refreshToken:

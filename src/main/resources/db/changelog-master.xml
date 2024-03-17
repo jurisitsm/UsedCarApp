@@ -6,6 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <include relativeToChangelogFile="true" file="changelog/user-changelog.xml"/>
+    <include relativeToChangelogFile="true" file="changelog/refresh-token-changelog.xml"/>
     <include relativeToChangelogFile="true" file="changelog/car_advertisement-changelog.xml"/>
 
 </databaseChangeLog>

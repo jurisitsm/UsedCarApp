@@ -4,12 +4,14 @@ import com.jurisitsm.test.model.AppUser;
 import com.jurisitsm.test.repository.UserRepository;
 import com.jurisitsm.test.web.dto.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -34,5 +36,11 @@ public class UserService {
     public void registerLogoutTime(AppUser user){
         user.setLastLogoutTime(LocalDateTime.now());
         userRepository.save(user);
+    }
+
+    @Override
+    public AppUser loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElse(null);
     }
 }

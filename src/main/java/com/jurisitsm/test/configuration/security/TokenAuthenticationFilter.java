@@ -36,8 +36,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             Optional.ofNullable(token)
                     .filter(tokenService::validateAccessToken)
                     .map(tokenService::getEmailFromAccessToken)
-                    .map(userService::getUserByEmail)
-                    .map(user -> new UsernamePasswordAuthenticationToken(user, null))
+                    .map(userService::loadUserByUsername)
+                    .map(user -> new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()))
                     .ifPresent(authentication -> SecurityContextHolder.getContext()
                             .setAuthentication(authentication));
         } catch (Exception e) {

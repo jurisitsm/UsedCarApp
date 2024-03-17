@@ -6,6 +6,7 @@ import com.jurisitsm.test.model.AppUser;
 import com.jurisitsm.test.model.RefreshToken;
 import com.jurisitsm.test.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,10 +43,10 @@ public class TokenService {
         var expirationDate = issueDate.plusMinutes(jwtConfigValues.getAccessToken().getExpiresMin());
 
         return Jwts.builder()
-                .subject(email)
-                .issuedAt(Date.from(issueDate.atZone(ZoneId.systemDefault()).toInstant()))
-                .expiration(Date.from(expirationDate.atZone(ZoneId.systemDefault()).toInstant()))
-                .signWith(key)
+                .setSubject(email)
+                .setIssuedAt(Date.from(issueDate.atZone(ZoneId.systemDefault()).toInstant()))
+                .setExpiration(Date.from(expirationDate.atZone(ZoneId.systemDefault()).toInstant()))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -73,13 +74,13 @@ public class TokenService {
         refreshTokenRepository.deleteByUser(user);
     }
 
-    public boolean validateAccessToken(String token) {
-        var key = getSecretKey();
+    public boolean validateAccessToken(String accessToken) {
         try {
-            Jwts.parser()
-                    .verifyWith(key)
+            var key = getSecretKey();
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
                     .build()
-                    .parseSignedClaims(token);
+                    .parseClaimsJws(accessToken);
             return true;
         } catch (Exception e) {
             return false;
@@ -106,11 +107,11 @@ public class TokenService {
         }
 
         var key = getSecretKey();
-        return Jwts.parser()
-                .verifyWith(key)
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
                 .build()
-                .parseSignedClaims(accessToken)
-                .getPayload()
+                .parseClaimsJws(accessToken)
+                .getBody()
                 .getSubject();
     }
 
