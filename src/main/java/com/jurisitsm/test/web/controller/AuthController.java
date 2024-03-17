@@ -59,7 +59,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public void logout(@AuthenticationPrincipal AppUser user) throws UsedCarAdException {
+    public void logout(@AuthenticationPrincipal AppUser user,
+                       HttpServletRequest httpServletRequest) throws UsedCarAdException {
+        tokenService.blacklistAccessToken(httpServletRequest);
         tokenService.deleteRefreshTokenByUser(user);
         userService.registerLogoutTime(user);
     }

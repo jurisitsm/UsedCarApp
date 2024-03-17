@@ -14,18 +14,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
+@Transactional
 public class TokenService {
     private static final String TOKEN_PREFIX = "Bearer ";
     private final JwtConfigValues jwtConfigValues;
     private final RefreshTokenRepository refreshTokenRepository;
+    private Set<String> blacklist = Collections.synchronizedSet(new HashSet<>());
 
     @Autowired
     public TokenService(JwtConfigValues jwtConfigValues, RefreshTokenRepository refreshTokenRepository) {
@@ -71,6 +77,9 @@ public class TokenService {
     }
 
     public boolean validateAccessToken(String accessToken) {
+        if (blacklist.contains(accessToken)) {
+            return false;
+        }
         try {
             var key = getSecretKey();
             Jwts.parserBuilder()
@@ -129,6 +138,19 @@ public class TokenService {
             throw new UsedCarAdException("Refresh token is already expired.", HttpStatus.BAD_REQUEST);
         }
         return createRefreshToken(existingRefreshToken.getUser());
+    }
+
+
+    public void blacklistAccessToken(HttpServletRequest request) throws UsedCarAdException {
+        var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (!StringUtils.hasText(authHeader) || !authHeader.startsWith(TOKEN_PREFIX)) {
+            throw new UsedCarAdException("Invalid access token found.", HttpStatus.BAD_REQUEST);
+        }
+        var token = authHeader.replace(TOKEN_PREFIX, "");
+        if (!StringUtils.hasText(token)) {
+            throw new UsedCarAdException("Invalid access token found.", HttpStatus.BAD_REQUEST);
+        }
+        blacklist.add(token);
     }
 
     private SecretKey getSecretKey() {

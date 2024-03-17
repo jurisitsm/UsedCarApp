@@ -36,8 +36,8 @@ public class AdController {
     }
 
     @PostMapping
-    public ResponseEntity<AdResponse> createAd(@Valid @RequestBody AdRequest ad, @AuthenticationPrincipal AppUser user) {
-        return ResponseEntity.ok(adMapper.toAdResponse(adService.createAd(ad, user)));
+    public ResponseEntity<String> createAd(@Valid @RequestBody AdRequest ad, @AuthenticationPrincipal AppUser user) {
+        return ResponseEntity.ok(adService.createAd(ad, user));
     }
 
     @DeleteMapping("/{id}")

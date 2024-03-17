@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class AdService {
     private static final String adPathName = "/ad/";
     private final AdRepository adRepository;
@@ -28,9 +30,9 @@ public class AdService {
         this.userRepository = userRepository;
     }
 
-    public CarAdvertisement createAd(AdRequest adRequest, AppUser user){
+    public String createAd(AdRequest adRequest, AppUser user){
         return adRepository.save(new CarAdvertisement(adRequest.getBrand(), adRequest.getType(),
-                adRequest.getDescription(), adRequest.getPrice(), user));
+                adRequest.getDescription(), adRequest.getPrice(), user)).getId();
     }
 
     public CarAdvertisement getById(String id) throws UsedCarAdException {
