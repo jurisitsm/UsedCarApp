@@ -49,6 +49,7 @@ public class AppUser implements UserDetails {
         this.name = name;
         this.password = password;
         this.advertisements = Collections.emptySet();
+        this.enabled = true;
     }
 
     public String getId() {

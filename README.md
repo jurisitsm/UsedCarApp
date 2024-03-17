@@ -1,6 +1,10 @@
 # UsedCarApp
 BREDEX - Used car application test exam by Marcell Jurisits
 
+Command to start the app:
+```
+mvn spring-boot:run
+```
 swagger ui: http://localhost:8080/swagger-ui/index.html
 
 Login:
