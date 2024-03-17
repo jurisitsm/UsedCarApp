@@ -30,11 +30,12 @@ public class CarAdvertisement {
     public CarAdvertisement() {
     }
 
-    public CarAdvertisement(String brand, String type, String description, long price) {
+    public CarAdvertisement(String brand, String type, String description, long price, AppUser author) {
         this.brand = brand;
         this.type = type;
         this.description = description;
         this.price = price;
+        this.author = author;
     }
 
     public String getId() {

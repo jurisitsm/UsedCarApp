@@ -1,12 +1,12 @@
 package com.jurisitsm.test.web.dto.response;
 
-public class LoginResponse {
+public class TokenResponse {
     private String accesToken;
     private String refreshToken;
 
-    public LoginResponse(){}
+    public TokenResponse(){}
 
-    public LoginResponse(String accesToken, String refreshToken) {
+    public TokenResponse(String accesToken, String refreshToken) {
         this.accesToken = accesToken;
         this.refreshToken = refreshToken;
     }

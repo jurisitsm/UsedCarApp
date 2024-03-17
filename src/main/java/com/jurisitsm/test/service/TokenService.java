@@ -33,8 +33,8 @@ public class TokenService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public String generateAccessTokenFromEmail(String email) {
-        if (!StringUtils.hasText(email)) {
+    public String generateAccessTokenFromEmail(AppUser user) {
+        if (!StringUtils.hasText(user.getEmail())) {
             return null;
         }
 
@@ -43,7 +43,7 @@ public class TokenService {
         var expirationDate = issueDate.plusMinutes(jwtConfigValues.getAccessToken().getExpiresMin());
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getEmail())
                 .setIssuedAt(Date.from(issueDate.atZone(ZoneId.systemDefault()).toInstant()))
                 .setExpiration(Date.from(expirationDate.atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -52,17 +52,14 @@ public class TokenService {
 
     public RefreshToken createRefreshToken(AppUser user) throws UsedCarAdException {
         if (user == null) {
-            throw new UsedCarAdException("Missing user on login.", HttpStatus.UNAUTHORIZED);
+            throw new UsedCarAdException("Missing user.", HttpStatus.UNAUTHORIZED);
         }
-
         refreshTokenRepository.findByUser(user)
                 .ifPresent(refreshTokenRepository::delete);
 
         LocalDateTime refreshTokenExpiryDate = LocalDateTime.now()
                 .plusMinutes(jwtConfigValues.getRefreshToken().getExpiresMin());
-
         RefreshToken refreshToken = new RefreshToken(refreshTokenExpiryDate, user);
-
         return refreshTokenRepository.save(refreshToken);
     }
 
@@ -70,7 +67,6 @@ public class TokenService {
         if (user == null) {
             throw new UsedCarAdException("Missing user on logout.", HttpStatus.UNAUTHORIZED);
         }
-
         refreshTokenRepository.deleteByUser(user);
     }
 
@@ -92,12 +88,10 @@ public class TokenService {
         if (!StringUtils.hasText(authHeader) || !authHeader.startsWith(TOKEN_PREFIX)) {
             return null;
         }
-
         var token = authHeader.replace(TOKEN_PREFIX, "");
         if (!StringUtils.hasText(token)) {
             return null;
         }
-
         return token;
     }
 
@@ -105,7 +99,6 @@ public class TokenService {
         if (!StringUtils.hasText(accessToken)) {
             return null;
         }
-
         var key = getSecretKey();
         return Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -113,6 +106,29 @@ public class TokenService {
                 .parseClaimsJws(accessToken)
                 .getBody()
                 .getSubject();
+    }
+
+    public boolean isRefreshTokenExpired(RefreshToken token) throws UsedCarAdException {
+        if (token == null) {
+            throw new UsedCarAdException("Missing Refresh token", HttpStatus.BAD_REQUEST);
+        }
+
+        if (token.getExpiryDate().isBefore(LocalDateTime.now())) {
+            refreshTokenRepository.delete(token);
+            return true;
+        }
+
+        return false;
+    }
+
+    public RefreshToken refreshToken(String refreshTokenId) throws UsedCarAdException {
+        RefreshToken existingRefreshToken = refreshTokenRepository.findById(refreshTokenId)
+                .orElseThrow(() -> new UsedCarAdException("Refresh token with given id could not be found",
+                        HttpStatus.NOT_FOUND));
+        if (isRefreshTokenExpired(existingRefreshToken)) {
+            throw new UsedCarAdException("Refresh token is already expired.", HttpStatus.BAD_REQUEST);
+        }
+        return createRefreshToken(existingRefreshToken.getUser());
     }
 
     private SecretKey getSecretKey() {

@@ -1,6 +1,7 @@
 package com.jurisitsm.test.service;
 
 import com.jurisitsm.test.exception.UsedCarAdException;
+import com.jurisitsm.test.model.AppUser;
 import com.jurisitsm.test.model.CarAdvertisement;
 import com.jurisitsm.test.repository.AdRepository;
 import com.jurisitsm.test.repository.UserRepository;
@@ -27,9 +28,9 @@ public class AdService {
         this.userRepository = userRepository;
     }
 
-    public CarAdvertisement createAd(AdRequest adRequest){
+    public CarAdvertisement createAd(AdRequest adRequest, AppUser user){
         return adRepository.save(new CarAdvertisement(adRequest.getBrand(), adRequest.getType(),
-                adRequest.getDescription(), adRequest.getPrice()));
+                adRequest.getDescription(), adRequest.getPrice(), user));
     }
 
     public CarAdvertisement getById(String id) throws UsedCarAdException {
@@ -38,7 +39,12 @@ public class AdService {
                         HttpStatus.NOT_FOUND));
     }
 
-    public void deleteById(String id){
+    public void deleteById(String id, AppUser user) throws UsedCarAdException {
+        CarAdvertisement ad = getById(id);
+        if (!ad.getAuthor().getId().equals(user.getId())) {
+            throw new UsedCarAdException("You cannot delete the advert of another user.",
+                    HttpStatus.BAD_REQUEST);
+        }
         adRepository.deleteById(id);
     }
 

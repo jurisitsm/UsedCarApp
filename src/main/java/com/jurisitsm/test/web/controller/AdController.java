@@ -1,6 +1,7 @@
 package com.jurisitsm.test.web.controller;
 
 import com.jurisitsm.test.exception.UsedCarAdException;
+import com.jurisitsm.test.model.AppUser;
 import com.jurisitsm.test.service.AdService;
 import com.jurisitsm.test.web.dto.request.AdRequest;
 import com.jurisitsm.test.web.dto.response.AdResponse;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,13 +36,14 @@ public class AdController {
     }
 
     @PostMapping
-    public ResponseEntity<AdResponse> createAd(@Valid @RequestBody AdRequest ad) {
-        return ResponseEntity.ok(adMapper.toAdResponse(adService.createAd(ad)));
+    public ResponseEntity<AdResponse> createAd(@Valid @RequestBody AdRequest ad, @AuthenticationPrincipal AppUser user) {
+        return ResponseEntity.ok(adMapper.toAdResponse(adService.createAd(ad, user)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAd(@PathVariable("id") String id) {
-        adService.deleteById(id);
+    public ResponseEntity<Void> deleteAd(@PathVariable("id") String id, @AuthenticationPrincipal AppUser user)
+            throws UsedCarAdException {
+        adService.deleteById(id, user);
         return ResponseEntity.ok().build();
     }
 
