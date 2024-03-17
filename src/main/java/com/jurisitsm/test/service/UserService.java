@@ -26,11 +26,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public AppUser getUserByEmail(String email){
-        return userRepository.findByEmail(email)
-                .orElse(null);
-    }
-
     public void createUser(UserRequest userRequest){
         userRepository.save(new AppUser(userRequest.getEmail(), userRequest.getName(), userRequest.getPassword()));
     }

@@ -31,7 +31,7 @@ public class TokenService {
     private static final String TOKEN_PREFIX = "Bearer ";
     private final JwtConfigValues jwtConfigValues;
     private final RefreshTokenRepository refreshTokenRepository;
-    private Set<String> blacklist = Collections.synchronizedSet(new HashSet<>());
+    private final Set<String> blacklist = Collections.synchronizedSet(new HashSet<>());
 
     @Autowired
     public TokenService(JwtConfigValues jwtConfigValues, RefreshTokenRepository refreshTokenRepository) {

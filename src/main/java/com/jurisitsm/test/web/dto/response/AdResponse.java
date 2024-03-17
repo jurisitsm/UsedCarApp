@@ -10,14 +10,6 @@ public class AdResponse {
 
     public AdResponse(){}
 
-    public AdResponse(String id, String brand, String type, String description, long price) {
-        this.id = id;
-        this.brand = brand;
-        this.type = type;
-        this.description = description;
-        this.price = price;
-    }
-
     public String getId() {
         return id;
     }

@@ -4,11 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class UsedCarAdException extends Exception{
 
-    private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-
-    public UsedCarAdException(String message){
-        super(message);
-    }
+    private final HttpStatus httpStatus;
 
     public UsedCarAdException(String message, HttpStatus httpStatus){
         super(message);

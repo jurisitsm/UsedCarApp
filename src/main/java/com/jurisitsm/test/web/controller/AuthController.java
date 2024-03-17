@@ -69,6 +69,7 @@ public class AuthController {
     @PostMapping("/refreshtoken")
     public ResponseEntity<TokenResponse> refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest,
                                              HttpServletRequest httpServletRequest) throws UsedCarAdException {
+        tokenService.blacklistAccessToken(httpServletRequest);
         var refreshToken = tokenService.refreshToken(refreshTokenRequest.getRefreshToken());
         var accessToken = tokenService.generateAccessTokenFromEmail(refreshToken.getUser());
         return ResponseEntity.ok(new TokenResponse(accessToken, refreshToken.getId()));
