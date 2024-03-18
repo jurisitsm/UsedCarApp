@@ -141,7 +141,7 @@ public class TokenService {
     }
 
 
-    public void blacklistAccessToken(HttpServletRequest request) throws UsedCarAdException {
+    public void blacklistAccessToken(HttpServletRequest request) {
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (!StringUtils.hasText(authHeader) || !authHeader.startsWith(TOKEN_PREFIX)) {
             return;
