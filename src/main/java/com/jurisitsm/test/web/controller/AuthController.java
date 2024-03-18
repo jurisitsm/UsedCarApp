@@ -48,7 +48,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest) throws UsedCarAdException {
+    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest loginRequest,
+                                               HttpServletRequest httpServletRequest) throws UsedCarAdException {
+        tokenService.blacklistAccessToken(httpServletRequest);
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(), loginRequest.getPassword());
         var auth = authenticationManager.authenticate(authToken);

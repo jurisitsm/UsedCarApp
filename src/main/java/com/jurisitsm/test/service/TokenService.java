@@ -144,11 +144,11 @@ public class TokenService {
     public void blacklistAccessToken(HttpServletRequest request) throws UsedCarAdException {
         var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (!StringUtils.hasText(authHeader) || !authHeader.startsWith(TOKEN_PREFIX)) {
-            throw new UsedCarAdException("Invalid access token found.", HttpStatus.BAD_REQUEST);
+            return;
         }
         var token = authHeader.replace(TOKEN_PREFIX, "");
         if (!StringUtils.hasText(token)) {
-            throw new UsedCarAdException("Invalid access token found.", HttpStatus.BAD_REQUEST);
+            return;
         }
         blacklist.add(token);
     }
